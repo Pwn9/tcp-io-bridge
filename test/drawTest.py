@@ -7,10 +7,10 @@ import base64
 tux = "";
 nyan = "";
 
-with open("E:/nodejs/projects/QT2HTML5Dev3/test/resources/Tux-small.png", "rb") as tux_file:
+with open("resources/Tux-small.png", "rb") as tux_file:
     tux = base64.b64encode(tux_file.read())
 
-with open("E:/nodejs/projects/QT2HTML5Dev3/test/resources/nyan.png", "rb") as nyan_file:
+with open("resources/nyan.png", "rb") as nyan_file:
     nyan = base64.b64encode(nyan_file.read())
     
 # Create a TCP/IP socket
