@@ -1,0 +1,15 @@
+*** ABOUT TESTS FOR TCP-IO-BRIDGE ***
+
+Included tests are written in Python 3.3 originally on windows, so a 
+simple batch file is included to run the tests automatically.
+
+Requirements:
+
+- Python 3.3
+- Python libraries: numpy, pillow
+
+Usage:
+
+Run your node.js app first, then connect via web browser, then run
+your test script. The TCP socket will be bound to an available web 
+socket and create a 1 to 1 line of communication.

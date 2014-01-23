@@ -1,0 +1,11 @@
+{
+     "name": "tcp-io-bridge",
+     "description": "Bridging browsers to server side tcp connection with socket.io.",
+     "version": "0.0.8",
+     "author": "Matthew Sudol <admin@pwn9.com>",
+     "dependencies": {
+        "express": "3.4.3",
+        "socket.io": "0.9.16"
+     },
+     "license": "GPL-3.0"
+}

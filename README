@@ -1,0 +1,133 @@
+﻿TCP-IO-BRIDGE v0.0.8 DOCUMENTATION
+
+Last Updated 01/22/14
+
+/*** 
+
+    tcp-io-bridge : By Matthew Sudol aka tREMor(admin@pwn9.com) 
+    
+    Notice: This code is free to test, modify and use as long as this notice 
+    remains intact. This code may not be used for commercial purposes without 
+    the authors express, written consent.
+    
+***/
+
+
+### INSTALLATION
+
+    WINDOWS:
+        1. Extract files
+            a. / - Root directory 
+                i. app.js - Node app
+                ii. config.js - Configuration file for node app
+            b. /public - Web accessible directories
+                i. /css - Stylesheets
+                ii. /js - Client side Javascript
+        2. Install NodeJS and npm
+        3. Make sure that PATH is set for "node" and "npm" so that they can be run from any location
+        4. Execute 'npm install -d' to create the node_modules folder from package.json
+        5. Edit configuration files.
+            a. /config.js - This should be fine without edits
+            b. /public/js/config.js - Client side config, make edits where applicable - documented in comments
+        6. Run program 'node app.js'
+
+    LINUX: 
+        1. Extract files
+            a. / - Root directory 
+                i. app.js - Node app
+                ii. config.js - Configuration file for node app
+            b. /public - Web accessible directories
+                i. /css - Stylesheets
+                ii. /js - Client side Javascript
+        2. Install NodeJS and npm
+        3. Execute 'npm install -d' to create the node_modules folder from package.json
+        4. Edit configuration files.
+            a. /config.js - This should be fine without edits
+            b. /public/js/config.js - Client side config, make edits where applicable - documented in comments
+        5. Run program 'node app.js'
+     
+    MAC:
+        1. Extract files
+            a. / - Root directory 
+                i. app.js - Node app
+                ii. config.js - Configuration file for node app
+            b. /public - Web accessible directories
+                i. /css - Stylesheets
+                ii. /js - Client side Javascript
+        2. Install NodeJS and npm
+        3. Execute 'npm install -d' to create the node_modules folder from package.json
+        4. Edit configuration files.
+            a. /config.js - This should be fine without edits
+            b. /public/js/config.js - Client side config, make edits where applicable - documented in comments
+        5. Run program 'node app.js'
+ 
+ 
+### CONFIGURATION    
+
+    There are two configuration files to edit with various values including ports and IPs
+    
+        1. /config.js - Configuration file for the server node application
+        
+        2. /public/js/config.js - Configuration file for the client side application
+    
+    
+### EVENTS
+
+    Events are sent from the client side to the node application which are passed to the TCP port and out 
+    to the connected application. The events available are configurable, based on how the application should 
+    be parsing various events.
+    
+    Edit /public/js/config.js under the EVENTS section. Important sections are
+    
+        1. var captureDouble = false;              // Set to true if you want to send double click events, false for raw click events
+        
+        2. var doubleClickThreshold = 200;         // This is a timer for what is considered a double. Set too high this will cause noticeable lag on the event
+        
+        3. keyrepeat[int];                         // When keys are held down, they will send keydown repeatedly, unless they are in the key
+                                                      repeat array. These keys will send 1 keydown event only, these are commonly modifiers such as SHIFT & CTRL
+        
+        4. Default event messages can all be configured
+        
+                /*** MOUSE EVENT MESSAGING CONFIG ***/
+                var mouseMove = "MM:";
+                var mouseRightDown = "RD:";
+                var mouseRightUp = "RU:";
+                var mouseDoubleDown = "DD:";
+                var mouseDoubleUp = "DU:";
+                var mouseDown = "MD:";
+                var mouseUp = "MU:";
+
+                /*** KEYBOARD EVENT MESSAGING CONFIG ***/
+                var keyDown = "KD:";
+                var keyUp = "KU:"; 
+                
+                /*** CANVAS RESIZE EVENT MESSAGING CONFIG ***/
+                var canvasSize = "CS:";
+                
+        5. A standard received event will look like this: "CODE:data". 
+        
+            a. For mouse events, it is CODE:Coordinates, eg. "MM:360,240"
+            
+            b. For keyboard events, it is CODE:keycode,  eg. "KD:65"
+            
+            c. As of right now this event handler only sends RAW KEYCODE data, maybe a later iteration will include actual keyChar data
+            
+            d. Canvas size handling still needs some finishing touches.
+
+        
+### CANVAS COMMANDS
+
+    1. The Canvas can receive any of the follow "Web Cursor Styles":
+    
+        auto        move           no-drop      col-resize
+        all-scroll  pointer        not-allowed  row-resize
+        crosshair   progress       e-resize     ne-resize
+        default     text           n-resize     nw-resize
+        help        vertical-text  s-resize     se-resize
+        inherit     wait           w-resize     sw-resize
+        
+### TO-DO - Document protocols, browser compatibility issues, flash canvas, 
+
+### TO-DO - Document how to setup for SSL (generate key.pem and cert.pem)
+
+### TO-DO - Address memory browser problems, client side buffer overrun, performance and network throughput
