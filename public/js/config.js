@@ -8,12 +8,14 @@
     
 ***/
 
+"use strict";
+
 /*** GLOBAL CONFIG ***/
 var log = 1;                            // 0 = none, 1 = info, 2 = full, 3 = debug
 
 /*** IO CLIENT ***/
 var isSSL = false;                      // Use SSL?
-var ip = "your.ip.here";           // Server IP - Set this to the IP/DNS of the host machine so the client knows where to connect via socket.io
+var ip = "your.ip.here";                // Server IP - Set this to the IP/DNS of the host machine so the client knows where to connect via socket.io
                                         // It would be really cool if we could serve this up dynamically somehow so it doesn't need to be configured
 var port = "4000";                      // Server Port
 if (isSSL) {
@@ -61,11 +63,13 @@ var keyUp = "KU:";
 var canvasSize = "CS:";
 
 /*** BUFFER FOR IO SEND - DO NOT EDIT ***/
-var buffer = '';                // Buffer variable
+var buffer = '';                // Buffer variable - no longer needed
 var d1 = "@";                   // Front delimiter
 var d2 = "|";                   // Rear delimiter
 var pd = ":";                   // Command parse delimiter
 
+/*** GLOBAL IMAGE OBJECT? ***/
+var image = new Image();
 
 /*** BROWSER STUFF DONT EDIT ***/
 var userNav = navigator.userAgent.toLowerCase();
@@ -92,7 +96,6 @@ if (IEVer < 10) {               // we can do this better in the future.
 else {
     var safeBrowser = true;
 }
-
 
 /*** DEBUG LOGGING FUNCTION ***/
 function debug(level) {                            // this is not as clean but it uses less memory

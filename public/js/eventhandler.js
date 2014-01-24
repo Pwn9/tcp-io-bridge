@@ -8,6 +8,8 @@
     
 ***/
 
+"use strict";
+
 /*** EVENT HANDLING FUNCTIONS ***/
 
 /* CANVAS RESIZED */

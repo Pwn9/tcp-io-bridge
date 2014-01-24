@@ -8,36 +8,21 @@
     
 ***/
 
+"use strict";
+
 /*** FUNCTIONS ***/
 
-var drawImg = function(format, xy, img) {                         // draw image to canvas
+function drawImg(xy, img) {                         // draw image to canvas
     var coords = xy.split(','); 
-    var image = new Image();
-    switch(format) {
-        case "png":
-            image.src = "data:image/png;base64," + img;
-            break;
-        case "jpg":
-            image.src = "data:image/jpg;base64," + img;
-            break;                     
-        case "gif":
-            image.src = "data:image/gif;base64," + img;
-            break;            
-    }
-
-    image.onload = function() {                                     // required for IE, maybe can dump for others - but image needs to be loaded before it can be drawn
+    image.onload = function() {                                     
         if ((coords[2] > 0) && (coords[3] > 0)) {
             context.drawImage(image, coords[0], coords[1], coords[2], coords[3]); 
         }
         else {
             context.drawImage(image, coords[0], coords[1]);
         }
-        //removed for now....  
-        //if (debug(2)) { console.log("[DEBUG] Image drawn at: " + coords[0] + "," + coords[1]);   } 
-        //image = null;
-        //img = null
-        //coords = null;
     }; 
+    image.src = img; 
 }; 
 
 function clearCanvas() {                                            // clear the canvas
@@ -75,13 +60,13 @@ socket.on('ioSend', function(data) {                                    // recei
         var opcode = parsed[0];            
         switch(opcode) {
             case "draw":
-                drawImg.call(null, "png", parsed[1], parsed[2]);
+                drawImg(parsed[1], "data:image/png;base64," + parsed[2]);
                 break;
             case "drawJpg":
-                drawImg.call(null, "jpg", parsed[1], parsed[2]);
+                drawImg(parsed[1], "data:image/jpg;base64," + parsed[2]);
                 break;
             case "drawGif":
-                drawImg.call(null, "gif", parsed[1], parsed[2]);
+                drawImg(parsed[1], "data:image/gif;base64," + parsed[2]);
                 break;                  
             case "cursor":
                 setCursor(parsed[1]);
@@ -103,17 +88,13 @@ socket.on('ioSend', function(data) {                                    // recei
 });
 
     /*** 
-        POTENTIALLY CLEANUP BUFFER OVERRUN? 
         
-        Or is socket.io leaking memory somewhere as well?
+        Chome is eating up memory in the image portion of the draw image function (fixed in chrome v.34 1/21/2014)
         
-        How large should the buffer be?
+        Is socket.io leaking memory somewhere as well still?
         
         Does the protocol between socket.io - node server - tcp socket need to be blocking?
-        
-        Perhaps parsing the buffer asynchronously in it's own function in a setInterval like 
-        earlier versions might work better?
-        
+
         ughhh.. shoot me, I'm actually considering setInterval.
         
         Why is IE8 and IE9 dropping out at times? Probably the XHR polling, but flash sockets

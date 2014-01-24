@@ -149,22 +149,16 @@ var tcpserver = net.createServer(function (tcpsock) {
     // Add a 'data' event handler to this instance of socket and send to webclient if exists, otherwise kill tcpsock
     tcpsock.on('data', function(data) { 
         if (ioclients.indexOf(webclient) != -1) {
-            /*** 
-            JUST MOVED THIS ALL HERE TO THE NODE APP FROM THE CLIENT SIDE
-            v0.0.9
-            Perhaps it will make a client side performance difference
-            ***/
             var xdata = new Uint16Array(data);
             data = String.fromCharCode.apply(null, xdata);
             webclient.iobuffer = webclient.iobuffer + data;            
             var splitA = [];
             var splitB = [];
-            /*** REALLY NEED TO THINK ABOUT THIS... ARE WE GETTING BUFFER OVERRUN? ***/ 
             while(webclient.iobuffer.indexOf(d1) != -1 && webclient.iobuffer.indexOf(d2) != -1)         // While loop reads buffer until there are no commands left to issue
             {
                 splitA = webclient.iobuffer.split(d2);                  // Array with rear delimiter
                 splitB = splitA[0].split(d1);           
-                webclient.volatile.emit('ioSend', splitB[1]);           // This should be an @command to send to the web client
+                webclient.volatile.emit('ioSend', splitB[1]);           // This should be an @command
                 splitA.shift();                                         // Shift array
                 webclient.iobuffer = splitA.join(d2);                   // Update buffer from shifted array with rear delimiter
             } 
