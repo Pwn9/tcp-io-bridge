@@ -105,6 +105,11 @@ io.set('transports', config.io.transports);
 var tcpclients = [];                                        // Keep track of tcp connections
 var ioclients = [];                                         // Keep track of socket.io connections
 
+/*** INTERIM BUFFER ***/
+var d1 = "@";                   // Front delimiter
+var d2 = "|";                   // Rear delimiter
+var pd = ":";                   // Command parse delimiter
+
 /*** TCP SERVER ***/
 var tcpserver = net.createServer(function (tcpsock) {
     
@@ -120,6 +125,7 @@ var tcpserver = net.createServer(function (tcpsock) {
     for (i = 0; i < ioclients.length; i++) {
         if (ioclients[i].connection == '') {
             ioclients[i].connection = tcpsock.name;                         // give the web client a connection to this sock
+            ioclients[i].iobuffer = '';
             tcpsock.connection = ioclients[i].id;                           // give this sock a connection to the web client
             ioclients[i].emit('syncTcp', tcpsock.name);                     // tell the socket.io to connect up to this tcp sock for this client
             webclient = ioclients[i];                                       // make this client this sockets webclient
@@ -143,7 +149,25 @@ var tcpserver = net.createServer(function (tcpsock) {
     // Add a 'data' event handler to this instance of socket and send to webclient if exists, otherwise kill tcpsock
     tcpsock.on('data', function(data) { 
         if (ioclients.indexOf(webclient) != -1) {
-            webclient.volatile.emit('ioSend', data);                                             // Send data to the connected web client
+            /*** 
+            JUST MOVED THIS ALL HERE TO THE NODE APP FROM THE CLIENT SIDE
+            v0.0.9
+            Perhaps it will make a client side performance difference
+            ***/
+            var xdata = new Uint16Array(data);
+            data = String.fromCharCode.apply(null, xdata);
+            webclient.iobuffer = webclient.iobuffer + data;            
+            var splitA = [];
+            var splitB = [];
+            /*** REALLY NEED TO THINK ABOUT THIS... ARE WE GETTING BUFFER OVERRUN? ***/ 
+            while(webclient.iobuffer.indexOf(d1) != -1 && webclient.iobuffer.indexOf(d2) != -1)         // While loop reads buffer until there are no commands left to issue
+            {
+                splitA = webclient.iobuffer.split(d2);                  // Array with rear delimiter
+                splitB = splitA[0].split(d1);           
+                webclient.volatile.emit('ioSend', splitB[1]);           // This should be an @command to send to the web client
+                splitA.shift();                                         // Shift array
+                webclient.iobuffer = splitA.join(d2);                   // Update buffer from shifted array with rear delimiter
+            } 
         }
         else {
             tcpsock.write(config.msg.begin + config.msg.tcp.noIO + config.msg.end);     

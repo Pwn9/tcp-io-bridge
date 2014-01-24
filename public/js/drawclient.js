@@ -26,9 +26,14 @@ var drawImg = function(format, xy, img) {                         // draw image 
     }
 
     image.onload = function() {                                     // required for IE, maybe can dump for others - but image needs to be loaded before it can be drawn
-        context.drawImage(image, coords[0], coords[1]); 
+        if ((coords[2] > 0) && (coords[3] > 0)) {
+            context.drawImage(image, coords[0], coords[1], coords[2], coords[3]); 
+        }
+        else {
+            context.drawImage(image, coords[0], coords[1]);
+        }
         //removed for now....  
-        //debug("[DEBUG] Image drawn at: " + coords[0] + "," + coords[1], 3);    
+        //if (debug(2)) { console.log("[DEBUG] Image drawn at: " + coords[0] + "," + coords[1]);   } 
         //image = null;
         //img = null
         //coords = null;
@@ -42,12 +47,12 @@ function clearCanvas() {                                            // clear the
 
 function setCursor(cursorStyle) {                                   // change mouse cursor 
     canvas.style.cursor=cursorStyle;
-    debug("[INFO] Received cursor change: " + cursorStyle, 1);
+    if (debug(1)) { console.log("[INFO] Received cursor change: " + cursorStyle); }
 };
 
 function doEval(code) {                                             // straight eval (remove for production, dangerous)
     eval(code);
-    debug("[INFO] Received eval: " + code, 1);
+    if (debug(1)) { console.log("[INFO] Received eval: " + code); }
 };
 
 /*** SOCKET RECEIVE ***/   
@@ -63,41 +68,9 @@ socket.on('syncTcp', function (data) {                                  // sycnT
 });
 
 socket.on('ioSend', function(data) {                                    // receive command from socket.io 
-    if (safeBrowser) {                                                  // IE < 10 doesn't support Uint16Array
-        var xdata = new Uint16Array(data);
-        data = String.fromCharCode.apply(null, xdata);
-        buffer = buffer + data;                                         // Update the buffer with most recent ioSend data  
-    }
-    else {                                                              // So we have to kludge this in ^ 
-        var xdata = '';
-        for (var i = 0; i < data.length; i++) {
-            xdata += String.fromCharCode(data[i]);
-        }
-        buffer = buffer + xdata;                                         // Update the buffer with most recent ioSend data   
-    }                                   
-    //data = null;
-    var splitA = [];
-    var splitB = [];
     
-    /*** REALLY NEED TO THINK ABOUT THIS... ARE WE GETTING BUFFER OVERRUN? ***/
-    
-    while(buffer.indexOf(d1) != -1 && buffer.indexOf(d2) != -1)         // While loop reads buffer until there are no commands left to issue
-    //if(buffer.indexOf(d1) != -1 && buffer.indexOf(d2) != -1)         // While loop reads buffer until there are no commands left to issue    
-    {
-        splitA = buffer.split(d2);                  // Array with rear delimiter
-        splitB = splitA[0].split(d1);           
-        doParse.call(null, splitB[1]);              // This should be an @command
-        //splitB = null;
-        splitA.shift();                             // Shift array
-        buffer = splitA.join(d2);                   // Update buffer from shifted array with rear delimiter
-    } 
-    
-    //splitA = null;  
-}); 
+    var parsed = data.split(pd); 
 
-var doParse = function(parse) {
-    var parsed = parse.split(pd); 
-    //debug("[DEBUG] Parsing data: " + parsed[0] + "," + parsed[1], 3);
     if (parsed.length == 3) {                       // make sure parse is legit; Opcode:args:data; otherwise something will be null   
         var opcode = parsed[0];            
         switch(opcode) {
@@ -117,7 +90,7 @@ var doParse = function(parse) {
                 doEval(parsed[1]);
                 break;  
             case "ping":
-                debug("[DEBUG] Ping received.", 1);
+                if (debug(1)) { console.log("[DEBUG] Ping received."); }
                 break;                   
             case "clear":
                 clearCanvas();
@@ -127,7 +100,8 @@ var doParse = function(parse) {
                 break;                  
         }       
     }
-    
+});
+
     /*** 
         POTENTIALLY CLEANUP BUFFER OVERRUN? 
         
@@ -146,10 +120,3 @@ var doParse = function(parse) {
         wont work in firewalls or load balancing scenarios...  decisions, decisions.
         
     ***/
-    
-    //parsed = null;   
-    /*if (buffer.length > 512000) {
-        buffer = "";
-        debug("[BUFFER] Clearing buffer overrun.", 1);
-    }*/
-};  

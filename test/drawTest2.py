@@ -56,17 +56,17 @@ def secondFunction():
         data = str(sock.recv(16))
         print ('receiving %s' % data)
         if data == "b'@KD:189|'":
-            sleep_time = sleep_time - 0.1
-            if sleep_time < 0.1:
-                sleep_time = 0.1
+            sleep_time = sleep_time - 0.05
+            if sleep_time < 0.05:
+                sleep_time = 0.05
         if data == "b'@KD:187|'":
-            sleep_time = sleep_time + 0.1            
+            sleep_time = sleep_time + 0.05            
         if data == "b'@KD:173|'":
-            sleep_time = sleep_time - 0.1
-            if sleep_time < 0.1:
-                sleep_time = 0.1
+            sleep_time = sleep_time - 0.05
+            if sleep_time < 0.05:
+                sleep_time = 0.05
         if data == "b'@KD:61|'":
-            sleep_time = sleep_time + 0.1   
+            sleep_time = sleep_time + 0.05   
         time.sleep(0.01)
         
 

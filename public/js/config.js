@@ -13,7 +13,7 @@ var log = 1;                            // 0 = none, 1 = info, 2 = full, 3 = deb
 
 /*** IO CLIENT ***/
 var isSSL = false;                      // Use SSL?
-var ip = "your.ip.goes.here";           // Server IP - Set this to the IP/DNS of the host machine so the client knows where to connect via socket.io
+var ip = "your.ip.here";           // Server IP - Set this to the IP/DNS of the host machine so the client knows where to connect via socket.io
                                         // It would be really cool if we could serve this up dynamically somehow so it doesn't need to be configured
 var port = "4000";                      // Server Port
 if (isSSL) {
@@ -66,9 +66,12 @@ var d1 = "@";                   // Front delimiter
 var d2 = "|";                   // Rear delimiter
 var pd = ":";                   // Command parse delimiter
 
+
 /*** BROWSER STUFF DONT EDIT ***/
 var userNav = navigator.userAgent.toLowerCase();
+
 var IEVer = parseInt(userNav.split('msie')[1]);
+
 if ((typeof IEVer === "undefined") || (IEVer == null) || (isNaN(IEVer))) {
     if (userNav.indexOf("firefox")) {
         IEVer = 9997;
@@ -80,19 +83,28 @@ if ((typeof IEVer === "undefined") || (IEVer == null) || (isNaN(IEVer))) {
         IEVer = 9999;
     }  
 }
-debug("User Agent: "+ userNav, 2);
-if (IEVer < 10) {
+
+if (debug(2)) {  console.log("User Agent: "+ userNav); }
+
+if (IEVer < 10) {               // we can do this better in the future.
     var safeBrowser = false;
 }
 else {
     var safeBrowser = true;
 }
 
+
 /*** DEBUG LOGGING FUNCTION ***/
-function debug(msg, level) {                            // rethink this maybe, a bit ineffienct
+function debug(level) {                            // this is not as clean but it uses less memory
     if (log >= level) {
         if (window.console && window.console.log) {
-           console.log(msg);
+           return true;
         } 
+        else { 
+            return false;
+        }
+    }
+    else {
+        return false;
     }
 }

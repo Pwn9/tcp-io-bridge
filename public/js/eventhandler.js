@@ -16,7 +16,7 @@ function resizeCanvas() {                                           // always ke
     canvas.height = window.innerHeight;
     var message = canvasSize + canvas.width + ',' + canvas.height;
     socket.emit('canvasEvent', message);    
-    debug("[INFO] Canvas size: " + canvas.width + " x " + canvas.height, 1); 
+    if (debug(1)) { console.log("[INFO] Canvas size: " + canvas.width + " x " + canvas.height);  }
 }
 
 /* MOUSE MOVED */
