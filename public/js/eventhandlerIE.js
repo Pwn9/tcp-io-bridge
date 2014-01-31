@@ -100,8 +100,7 @@ function getMousePos(canvas, evt) {                                  // canvas m
 }
 
 /*** WINDOW HANDLING ***/
-
-                                                   
+                                          
     window.attachEvent('onresize', resizeCanvas);                       // resize window
 
 /*** MOUSE EVENT HANDLING ***/

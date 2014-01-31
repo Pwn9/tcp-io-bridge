@@ -21,8 +21,10 @@ function drawImg(xy, img) {                         // draw image to canvas
         else {
             context.drawImage(image, coords[0], coords[1]);
         }
+        coords = null;
+        img = null;
     }; 
-    image.src = img; 
+    image.src = img;   
 }; 
 
 function clearCanvas() {                                            // clear the canvas
@@ -57,22 +59,25 @@ socket.on('ioSend', function(data) {                                    // recei
     var parsed = data.split(pd); 
 
     if (parsed.length == 3) {                       // make sure parse is legit; Opcode:args:data; otherwise something will be null   
-        var opcode = parsed[0];            
+        var opcode = parsed[0];
+        var args1 = parsed[1];
+        var args2 = parsed[2]
+        
         switch(opcode) {
             case "draw":
-                drawImg(parsed[1], "data:image/png;base64," + parsed[2]);
+                drawImg(args1, "data:image/png;base64," + args2);
                 break;
             case "drawJpg":
-                drawImg(parsed[1], "data:image/jpg;base64," + parsed[2]);
+                drawImg(args1, "data:image/jpg;base64," + args2);
                 break;
             case "drawGif":
-                drawImg(parsed[1], "data:image/gif;base64," + parsed[2]);
+                drawImg(args1, "data:image/gif;base64," + args2);
                 break;                  
             case "cursor":
-                setCursor(parsed[1]);
+                setCursor(args1);
                 break;
             case "eval":
-                doEval(parsed[1]);
+                doEval(args1);
                 break;  
             case "ping":
                 if (debug(1)) { console.log("[DEBUG] Ping received."); }
@@ -83,21 +88,15 @@ socket.on('ioSend', function(data) {                                    // recei
             case "queryScreenSize":
                 resizeCanvas();
                 break;                  
-        }       
+        }
+
+        opcode = null;
+        args1 = null;
+        args2 = null;
+        parsed = null;
     }
+    else {
+        parsed = null;
+    }
+    
 });
-
-    /*** 
-        
-        Chome is eating up memory in the image portion of the draw image function (fixed in chrome v.34 1/21/2014)
-        
-        Is socket.io leaking memory somewhere as well still?
-        
-        Does the protocol between socket.io - node server - tcp socket need to be blocking?
-
-        ughhh.. shoot me, I'm actually considering setInterval.
-        
-        Why is IE8 and IE9 dropping out at times? Probably the XHR polling, but flash sockets
-        wont work in firewalls or load balancing scenarios...  decisions, decisions.
-        
-    ***/

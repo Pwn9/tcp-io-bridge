@@ -4,14 +4,12 @@ import time
 import base64
 
 tux = "";
-nyan = "";
 
 with open("resources/Tux-small.png", "rb") as tux_file:
     tux = base64.b64encode(tux_file.read())
 
-with open("resources/nyan.png", "rb") as nyan_file:
-    nyan = base64.b64encode(nyan_file.read())
-    
+tuxdec = tux.decode('utf-8;')
+
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -42,7 +40,7 @@ def firstFunction():
         for y in my_range(0, 640, 40):
                 for x in my_range(0, 1280, 40):
                     # send image down
-                    msg = ('@draw:%d,%d:%s|' % (x,y,tux.decode('utf-8;')))  
+                    msg = ('@draw:%d,%d:%s|' % (x,y,tuxdec))  
                     sock.sendall(msg.encode('utf-8;'))
                     time.sleep(sleep_time)        
 
