@@ -33,10 +33,10 @@ def firstFunction():
         temp = ""        
         imarray = numpy.random.rand(360,360,3) * 255
         im = Image.fromarray(imarray.astype('uint8')).convert('RGBA')
-        im.save('bigtemp.png')
-        with open("bigtemp.png", "rb") as temp_file:
+        im.save('bigtemp.jpg')
+        with open("bigtemp.jpg", "rb") as temp_file:
             temp = base64.b64encode(temp_file.read())
-        msg = ('@draw:0,0:%s|' % (temp.decode('utf-8;')))  
+        msg = ('@drawJpg:0,0:%s|' % (temp.decode('utf-8;')))  
         sock.sendall(msg.encode('utf-8;'))
         time.sleep(sleep_time)        
 

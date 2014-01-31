@@ -19,6 +19,7 @@ function resizeCanvas() {                                           // always ke
     var message = canvasSize + canvas.width + ',' + canvas.height;
     socket.emit('canvasEvent', message);    
     if (debug(1)) { console.log("[INFO] Canvas size: " + canvas.width + " x " + canvas.height);  }
+    message = null;
 }
 
 /* MOUSE MOVED */
@@ -26,13 +27,15 @@ function mouseMoved(e) {                                             // run when
     mousePos = getMousePos(canvas, e);
     var message = mouseMove + mousePos.x + ',' + mousePos.y;
     socket.emit('canvasEvent', message);
+    message = null;
 }
 
 /* MOUSE DOWN */
 function mouseClickDown(e) {
     e.preventDefault(); 
+    var message;
     if (e.button === 2) {                                               // right click
-        var message = mouseRightDown + mousePos.x + ',' + mousePos.y;
+        message = mouseRightDown + mousePos.x + ',' + mousePos.y;
         socket.emit('canvasEvent', message);    
     }
     else {                                                              // left click 
@@ -40,29 +43,31 @@ function mouseClickDown(e) {
             if (downclickTimer) {                                       // is double                                  
                 clearTimeout(downclickTimer);
                 downclickTimer = null;
-                var message = mouseDoubleDown + mousePos.x + ',' + mousePos.y;   
+                message = mouseDoubleDown + mousePos.x + ',' + mousePos.y;   
                 socket.emit('canvasEvent', message);            
             }
             else {                                                      // is single
                 downclickTimer = setTimeout(function(e){
                     downclickTimer = null;
-                    var message = mouseDown + mousePos.x + ',' + mousePos.y;
+                    message = mouseDown + mousePos.x + ',' + mousePos.y;
                     socket.emit('canvasEvent', message);           
                 }, doubleClickThreshold);
             }        
         }
         else {                                                          // capture double is false, send all clicks as singles (default)
-            var message = mouseDown + mousePos.x + ',' + mousePos.y;
+            message = mouseDown + mousePos.x + ',' + mousePos.y;
             socket.emit('canvasEvent', message); 
         }
     }
+    message = null;
 }
 
 /* MOUSE UP */
 function mouseClickUp(e) {
     e.preventDefault(); 
+    var message;
     if (e.button === 2) {                                               // right click
-        var message = mouseRightUp + mousePos.x + ',' + mousePos.y;
+        message = mouseRightUp + mousePos.x + ',' + mousePos.y;
         socket.emit('canvasEvent', message);    
     }   
     else {                                                              // left click        
@@ -70,22 +75,23 @@ function mouseClickUp(e) {
             if (downclickTimer) {                                       // is double                                  
                 clearTimeout(downclickTimer);
                 downclickTimer = null;
-                var message = mouseDoubleUp + mousePos.x + ',' + mousePos.y;   
+                message = mouseDoubleUp + mousePos.x + ',' + mousePos.y;   
                 socket.emit('canvasEvent', message);            
             }          
             else {                                                      // is single
                 downclickTimer = setTimeout(function(e){
                     downclickTimer = null;
-                    var message = mouseUp + mousePos.x + ',' + mousePos.y;
+                    message = mouseUp + mousePos.x + ',' + mousePos.y;
                     socket.emit('canvasEvent', message);           
                 }, doubleClickThreshold);
             }        
         }    
         else {                                                          // capture double is false, send all clicks as singles (default)
-            var message = mouseUp + mousePos.x + ',' + mousePos.y;
+            message = mouseUp + mousePos.x + ',' + mousePos.y;
             socket.emit('canvasEvent', message); 
         }
     }
+    message = null;
 }
 
 /* GET MOUSE POSITION */
@@ -132,6 +138,8 @@ if (IEVer == 11) {                                                          // S
             var message = keyDown + code;
             socket.emit('canvasEvent', message);    
         }
+        code = null;
+        message = null;        
     }, false);
 
     document.addEventListener('keyup', function(e) {                        // keyup event
@@ -146,6 +154,8 @@ if (IEVer == 11) {                                                          // S
         }
         var message = keyUp + code;
         socket.emit('canvasEvent', message);
+        code = null;
+        message = null;        
     }, false);    
 }
 else {                                                                      // Intelligently designed browsers, which amazingly inclue IE10
@@ -165,6 +175,8 @@ else {                                                                      // I
             var message = keyDown + code;
             socket.emit('canvasEvent', message);    
         }
+        code = null;
+        message = null;        
     }, false);
 
     window.addEventListener('keyup', function(e) {                          // keyup event
@@ -179,6 +191,8 @@ else {                                                                      // I
         }
         var message = keyUp + code;
         socket.emit('canvasEvent', message);
+        code = null;
+        message = null;
     }, false);
 
     window.addEventListener('keypress', function(e) {                        // keyup event
