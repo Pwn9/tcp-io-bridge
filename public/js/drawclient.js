@@ -13,7 +13,7 @@
 /*** FUNCTIONS ***/
 
 function drawImg(xy, img) {                         // draw image to canvas
-    var coords = xy.split(','); 
+    var coords = xy.split(',');    
     image.onload = function() {                                     
         if ((coords[2] > 0) && (coords[3] > 0)) {
             context.drawImage(image, coords[0], coords[1], coords[2], coords[3]); 
@@ -54,8 +54,7 @@ socket.on('syncTcp', function (data) {                                  // sycnT
     resizeCanvas();
 });
 
-socket.on('ioSend', function(data) {                                    // receive command from socket.io 
-    
+socket.on('ioSend', function(data) {                                    // receive command from socket.io  
     var parsed = data.split(pd); 
 
     if (parsed.length == 3) {                       // make sure parse is legit; Opcode:args:data; otherwise something will be null   
@@ -72,7 +71,11 @@ socket.on('ioSend', function(data) {                                    // recei
                 break;
             case "drawGif":
                 drawImg(args1, "data:image/gif;base64," + args2);
-                break;                  
+                break;  
+            case "drawUrl":
+                var d = new Date(); 
+                drawImg(args1, args2 +"?t=" + d.getTime());
+                break;                     
             case "cursor":
                 setCursor(args1);
                 break;
@@ -89,14 +92,15 @@ socket.on('ioSend', function(data) {                                    // recei
                 resizeCanvas();
                 break;                  
         }
-
         opcode = null;
         args1 = null;
         args2 = null;
         parsed = null;
+        data = null;
     }
     else {
         parsed = null;
+        data = null;
     }
     
 });

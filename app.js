@@ -11,6 +11,12 @@
 /*** GLOBAL CONFIG ***/
 var config = require('./config');                           // get configurations from /config.js
 
+/*** GRAPHICS MAGIC - Maybe someday ***/
+//var gm = require('gm');
+
+/*** FILE SYSTEM ***/
+var fs = require('fs');                                     // File system
+
 /*** TCP SERVER ***/
 var net = require('net');                                   // TCP only needs net
 
@@ -24,8 +30,6 @@ if (config.io.express) {
     var express = require('express');                       // Gets the express prereq
     
     var app = express();                                    // Create instance of express as "app"
-    
-    var fs = require('fs');                                 // File system
     
     if (config.io.ssl) {                                    // For SSL
         var options = {
@@ -44,6 +48,7 @@ if (config.io.express) {
     var io = require('socket.io').listen(ioserver);         // Binds socket.io as an express web server  
     
     app.get('/', function (req, res) {                      // routing for index and public folders
+        res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
         res.sendfile(__dirname + '/index.html');
     });
     
@@ -56,8 +61,6 @@ else {
         console.log('Running node socket.io application on native web server');
     }
  
-    var fs = require('fs');                                 // File system
-    
     if (config.io.ssl) {                                    // For SSL
         var options = {
                 key: fs.readFileSync('key.pem'),
