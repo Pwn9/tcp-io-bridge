@@ -49,7 +49,7 @@ if (config.io.express) {
     
     app.get('/', function (req, res) {                      // routing for index and public folders
         res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-        res.sendfile(__dirname + '/index.html');
+        res.sendFile(__dirname + '/index.html');
     });
     
     app.use(express.static(__dirname + '/public'));         // Public directory for client side 
@@ -91,17 +91,26 @@ else {
 }
 
 /*** Deployment Configuration variables for socket.io ***/  
-io.disable('browser client cache');
-io.enable('browser client minification');               // send minified client
-io.disable('browser client etag');                       // apply etag caching logic based on version number - testing disable temporarily
+
+//TODO: Update for socket.io 2.0+ 
+
+//io.disable('browser client cache');
+//io.enable('browser client minification');               // send minified client
+//io.disable('browser client etag');                       // apply etag caching logic based on version number - testing disable temporarily
 //io.enable('browser client gzip');                       // suggested deployment setting but causes a crash
+
+
 /*** User Configuration variables for socket.io ***/  
+
+// The following 4 seems to be not valid anymore in socket.io 2.0 - need to replace
 io.set('log level', config.io.loglevel);                // log level configurable from ./config.js
 io.set('authorization', config.io.authorization);
 io.set('close timeout', config.io.closetimeout);
+io.set('polling duration', config.io.pollingduration);
+
+// these are good still apparently?
 io.set('heartbeat timeout', config.io.heartbeattimeout);
 io.set('heartbeat interval', config.io.heartbeatinterval);
-io.set('polling duration', config.io.pollingduration);
 io.set('transports', config.io.transports);
 
 /*** CLIENT STACK ***/
