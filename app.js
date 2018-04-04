@@ -49,7 +49,7 @@ if (config.io.express) {
     
     app.get('/', function (req, res) {                      // routing for index and public folders
         res.header('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-        res.sendFile(__dirname + '/index.html');
+        res.sendFile(__dirname + '/public/index.html');
     });
     
     app.use(express.static(__dirname + '/public'));         // Public directory for client side 
@@ -103,15 +103,19 @@ else {
 /*** User Configuration variables for socket.io ***/  
 
 // The following 4 seems to be not valid anymore in socket.io 2.0 - need to replace
-io.set('log level', config.io.loglevel);                // log level configurable from ./config.js
-io.set('authorization', config.io.authorization);
-io.set('close timeout', config.io.closetimeout);
-io.set('polling duration', config.io.pollingduration);
+//io.set('log level', config.io.loglevel);                // log level configurable from ./config.js
+//io.set('authorization', config.io.authorization);
+//io.set('close timeout', config.io.closetimeout);
+//io.set('polling duration', config.io.pollingduration);
 
 // these are good still apparently?
 io.set('heartbeat timeout', config.io.heartbeattimeout);
 io.set('heartbeat interval', config.io.heartbeatinterval);
 io.set('transports', config.io.transports);
+
+// new options
+io.set('origins', '*');
+
 
 /*** CLIENT STACK ***/
 var tcpclients = [];                                        // Keep track of tcp connections
